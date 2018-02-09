@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://D:\demo\GSYVideoPlayerZoomDemo\GSYVideoPlayerDemo.iml" filepath="D:\demo\GSYVideoPlayerZoomDemo\GSYVideoPlayerDemo.iml" />
-      <module fileurl="file://$PROJECT_DIR$/GSYVideoPlayerZoomDemo.iml" filepath="$PROJECT_DIR$/GSYVideoPlayerZoomDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PlayerZoomDemo.iml" filepath="$PROJECT_DIR$/PlayerZoomDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

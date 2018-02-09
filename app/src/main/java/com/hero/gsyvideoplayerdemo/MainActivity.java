@@ -368,8 +368,34 @@ public class MainActivity extends AppCompatActivity implements DispatchTouchEven
 
         /** 计算两个手指间的中间点 */
         private PointF mid(MotionEvent event) {
-            float midX = (event.getX(1) + event.getX(0)) / 2;
-            float midY = (event.getY(1) + event.getY(0)) / 2;
+            /**
+             * 此处event 是父控件的  因此要计算比例   其次要 减去 初始位置     未完全解决
+             */
+            float midX = 0;
+            float midY = 0;
+            try {
+//            Logger.t("midgetX").d(event.getX(0) + "         " + event.getX(1));
+//            Logger.t("midgetY").d(event.getY(0) + "         " + event.getY(1));
+
+                //计算比例    横竖屏切换  不可写死比例
+//                double ratioX = (double) videoPlayer.getWidth() / (double) DensityUtils.getScreenW(MainActivity.this);
+//                double ratioY = (double) videoPlayer.getHeight() / (double) DensityUtils.getScreenH(MainActivity.this);
+//            Logger.t("getScreenH").d(DensityUtils.getScreenH(MainActivity.this) + "         " + videoPlayer.getHeight());
+//            Logger.t("ratioX").d(ratioX + "         " + ratioY);
+                //减去 初始位置
+                int[] location = new int[2];
+                videoPlayer.getLocationOnScreen(location); //获取在整个屏幕内的绝对坐标，含statusBar
+//            Logger.t("midgetX").d(event.getX(0) + "         " + event.getX(1));
+//            Logger.t("getLocationOnScreen").d(Arrays.toString(location));
+//                midX = (float) ((event.getX(1) + event.getX(0) - location[0] * 2) * ratioX / 2);
+//                midY = (float) ((event.getY(1) + event.getY(0) - location[1] * 2) * ratioY / 2);
+
+                midX = (float) ((event.getX(1) + event.getX(0) - location[0] * 2) / 2);
+                midY = (float) ((event.getY(1) + event.getY(0) - location[1] * 2) / 2);
+//            Logger.t("getY").d(midX + "         " + midY);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return new PointF(midX, midY);
         }
 
