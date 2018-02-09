@@ -142,6 +142,35 @@ public class MainActivity extends AppCompatActivity implements DispatchTouchEven
 
         videoPlayer.setIsTouchWiget(false);     //todo   设置不能滑动  只是设置了一个变量
 
+        /**
+         *  设置播放速度
+         */
+        //   public void setSpeed(float speed)
+
+        /**
+         * 播放速度
+         *
+         * @param speed      速度
+         * @param soundTouch 是否对6.0下开启变速不变调
+         */
+//        public void setSpeed(float speed, boolean soundTouch)
+        /**
+         * 播放中生效的播放数据
+         *
+         * @param speed
+         * @param soundTouch
+         */
+//        public void setSpeedPlaying(float speed, boolean soundTouch)
+
+        /**
+         * 长时间失去音频焦点，暂停播放器
+         *
+         * @param releaseWhenLossAudio 默认true，false的时候只会暂停
+         */
+        videoPlayer.setReleaseWhenLossAudio(false);
+        videoPlayer.setOpenPreView(true);
+
+
     }
 
     @Override

@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType;
-import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
+import com.shuyu.gsyvideoplayer.video.CustomGSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYBaseVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 
@@ -25,9 +25,10 @@ import java.util.List;
  * 注意
  * 这个播放器的demo配置切换到全屏播放器
  * 这只是单纯的作为全屏播放显示，如果需要做大小屏幕切换，请记得在这里耶设置上视频全屏的需要的自定义配置
+ *  StandardGSYVideoPlayer
  */
 
-public class SampleVideo extends StandardGSYVideoPlayer {
+public class SampleVideo extends CustomGSYVideoPlayer {
 
     private TextView mMoreScale;
 
