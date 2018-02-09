@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_play"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <com.hero.gsyvideoplayerdemo.CustomFrameLayout
+        android:id="@+id/frm"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.hero.gsyvideoplayerdemo.SampleVideo
+            android:id="@+id/video_player"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+        <com.hero.gsyvideoplayerdemo.ZoomableImageView2
+        android:id="@+id/ziv_2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+
+        <!--   <ImageView
+               android:id="@+id/iv_3"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:src="@mipmap/ic_launcher"
+               />-->
+
+    </com.hero.gsyvideoplayerdemo.CustomFrameLayout>
+
+</RelativeLayout>
