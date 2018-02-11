@@ -4,14 +4,13 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
-    <FrameLayout
+    <RelativeLayout
         android:id="@+id/surface_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center">
 
-    </FrameLayout>
-
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/thumb"
@@ -42,8 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:text="00:00"
-            android:textColor="#ffffff"
-            android:visibility="gone" />
+            android:textColor="#ffffff" />
 
         <SeekBar
             android:id="@+id/progress"
@@ -66,19 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="16dp"
             android:text="00:00"
-            android:textColor="#ffffff"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/switchSize"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginRight="16dp"
-            android:gravity="center"
-            android:minEms="2"
-            android:text="标准"
-            android:textColor="#ffffff"
-            android:visibility="gone" />
+            android:textColor="#ffffff" />
 
         <ImageView
             android:id="@+id/fullscreen"
@@ -86,8 +72,7 @@
             android:layout_height="fill_parent"
             android:paddingRight="16dp"
             android:scaleType="center"
-            android:src="@drawable/video_enlarge"
-            android:visibility="gone" />
+            android:src="@drawable/video_enlarge" />
     </LinearLayout>
 
     <ProgressBar
@@ -107,21 +92,25 @@
         android:layout_marginTop="6dp"
         android:visibility="gone" />
 
-    <moe.codeest.enviews.ENDownloadView
+
+    <ProgressBar
         android:id="@+id/loading"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:visibility="invisible" />
 
-    <moe.codeest.enviews.ENPlayView
+
+    <ImageView
         android:id="@+id/start"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_gravity="center_vertical" />
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/video_click_play_selector" />
 
 
     <ImageView
@@ -170,45 +159,9 @@
             android:layout_weight="1"
             android:paddingLeft="10dp"
             android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/change_transform"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:minEms="5"
-            android:paddingLeft="10dp"
-            android:text="旋转镜像"
-            android:textColor="@android:color/white"
-            android:textSize="13sp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/change_rotate"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:minEms="5"
-            android:paddingLeft="10dp"
-            android:text="旋转画面"
-            android:textColor="@android:color/white"
-            android:textSize="13sp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/moreScale"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:minEms="5"
-            android:paddingLeft="10dp"
-            android:text="默认比例"
-            android:textColor="@android:color/white"
-            android:textSize="13sp"
-            android:visibility="gone" />
+            android:textSize="18sp" />
     </LinearLayout>
+
 
     <RelativeLayout
         android:id="@+id/preview_layout"
@@ -217,20 +170,13 @@
         android:layout_above="@+id/layout_bottom"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="30dp"
-        android:visibility="gone" />
+        android:visibility="gone">
 
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        >
-
-        <LinearLayout
-            android:id="@+id/lin_seekpreview"
+        <ImageView
+            android:id="@+id/preview_image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" />
-
-    </HorizontalScrollView>
+            android:layout_height="match_parent"
+            android:background="#000000" />
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -1,23 +1,33 @@
 package com.hero.gsyvideoplayerdemo;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.media.MediaMetadataRetriever;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.orhanobut.logger.Logger;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType;
 import com.shuyu.gsyvideoplayer.video.CustomGSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYBaseVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -25,11 +35,16 @@ import java.util.List;
  * 注意
  * 这个播放器的demo配置切换到全屏播放器
  * 这只是单纯的作为全屏播放显示，如果需要做大小屏幕切换，请记得在这里耶设置上视频全屏的需要的自定义配置
- *  StandardGSYVideoPlayer
  */
 
-public class SampleVideo extends CustomGSYVideoPlayer {
+/**
+ * demo PreViewGSYVideoPlayer   进度条小窗口预览（测试）
+ * 怎么说呢。你可以看看源码，这个功能目前来说还不是很好，还在选择方案中，目前还没有什么特别体验好的方案，以前还有一个旧的方案，是CustomGSYVideoPlayer，不过目前没有维护，后面看看再寻找下上面实现逻辑比较好
+ */
 
+
+public class SampleVideo extends CustomGSYVideoPlayer {
+    private static final String TAG = "SampleVideo";
     private TextView mMoreScale;
 
     private TextView mSwitchSize;
@@ -49,6 +64,8 @@ public class SampleVideo extends CustomGSYVideoPlayer {
     private int mSourcePosition = 0;
 
     private String mTypeText = "标准";
+
+    private LinearLayout mLinSeekpreview;
 
     /**
      * 1.5.0开始加入，如果需要不同布局区分功能，需要重载
@@ -76,7 +93,7 @@ public class SampleVideo extends CustomGSYVideoPlayer {
         mSwitchSize = (TextView) findViewById(R.id.switchSize);
         mChangeRotate = (TextView) findViewById(R.id.change_rotate);
         mChangeTransform = (TextView) findViewById(R.id.change_transform);
-
+        mLinSeekpreview = (LinearLayout) findViewById(R.id.lin_seekpreview);
         //切换清晰度
         mMoreScale.setOnClickListener(new OnClickListener() {
             @Override
@@ -191,10 +208,9 @@ public class SampleVideo extends CustomGSYVideoPlayer {
         }
     }
 
-    public void setMoreScale( Matrix transform) {
+    public void setMoreScale(Matrix transform) {
         mTextureView.setTransform(transform);
         mTextureView.invalidate();
-
     }
 
     /**
@@ -208,6 +224,64 @@ public class SampleVideo extends CustomGSYVideoPlayer {
     public boolean setUp(List<SwitchVideoModel> url, boolean cacheWithPlay, String title) {
         mUrlList = url;
         return setUp(url.get(mSourcePosition).getUrl(), cacheWithPlay, title);
+    }
+
+    public void setPreView() throws Exception{
+        mLinSeekpreview.removeAllViews();
+
+        Logger.t(TAG).v("--mUrlList.get(mSourcePosition).getUrl()------------" + mUrlList.get(mSourcePosition).getUrl());
+        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+//后面这个是传请求Headers，如果有需要可以添加
+        mmr.setDataSource(mUrlList.get(mSourcePosition).getUrl(), new HashMap());
+
+        int currentTime = 0;
+
+        long duration = getGSYVideoManager().getMediaPlayer().getDuration();
+        Logger.t(TAG).v("--duration------------" + duration);
+
+        for (int i = 0; i < 21; i++) {
+//            try {
+//                Thread.sleep(500);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+            currentTime += duration / 20;
+            Logger.t(TAG).v("--currentTime------------" + currentTime);
+
+            Bitmap bitmap = mmr.
+                    getFrameAtTime(currentTime  * 1000, MediaMetadataRetriever.OPTION_CLOSEST);
+            Logger.t(TAG).v("--------------" + currentTime  * 1000);
+            File aaaview = FileUtils.createImageFile("AAAVIEW");
+            FileOutputStream fileOutputStream = null;
+            try {
+                fileOutputStream = new FileOutputStream(aaaview.getAbsolutePath());
+                bitmap.compress(Bitmap.CompressFormat.PNG, 90, fileOutputStream);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Logger.t(TAG).e("--fileOutputStream------------" + e);
+
+            } finally {
+                if (fileOutputStream != null) {
+                    try {
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        Logger.t(TAG).e("-- fileOutputStream.close();------------" + e);
+                        e.printStackTrace();
+                    }
+                }
+            }
+            ImageView imageView = new ImageView(mContext);
+            ViewsizeUtils.viewSizeLin(mContext , imageView ,120*3,72 *3);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 60, baos);
+            byte[] bytes=baos.toByteArray();
+
+            Glide.with(mContext)
+                    .load(bytes)
+                    .into(imageView);
+            mLinSeekpreview.addView(imageView);
+            bitmap.recycle();
+        }
     }
 
     /**

@@ -1,2 +1,0 @@
-# GSYVideoPlayerZoomAbleDemo
-基于GSYVideoPlayer，实现双指缩放

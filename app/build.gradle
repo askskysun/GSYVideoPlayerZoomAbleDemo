@@ -29,5 +29,8 @@ dependencies {
     compile 'com.shuyu:GSYVideoPlayer:4.0.0-beat1'
     compile 'com.jakewharton:butterknife:8.5.1'
     compile 'com.orhanobut:logger:2.1.1'
+
+    implementation 'com.github.bumptech.glide:glide:4.4.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 }
