@@ -3,6 +3,7 @@ package com.hero.gsyvideoplayerdemo;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -13,20 +14,11 @@ import android.widget.TextView;
 import java.lang.reflect.Field;
 
 
-public abstract class BaseActivity extends FragmentActivity{
+public abstract class BaseActivity extends FragmentActivity implements HandlerUtils.OnReceiveMessageListener {
     public TextView textView;
     protected BaseActivity self;
     public String TAG = "";
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
+    private HandlerUtils.HandlerHolder handlerHolder;
 
     /**
      * 初始化ui
@@ -49,14 +41,17 @@ public abstract class BaseActivity extends FragmentActivity{
 //设置StatusBar为透明显示,需要在setContentView之前完成操作
             window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
-        //false 连续点击不重新创建对象，显示时间延长
-        //true 连续点击重新创建对象
+        //handler
+        handlerHolder = new HandlerUtils.HandlerHolder(this);
         TAG = this.getClass().getSimpleName();
         self = this;
     }
-
-
-    // 通过反射机制获取手机状态栏高度
+    public void setHandlerPostDelayed(Runnable r, long delayMillis) {
+        if (handlerHolder != null) {
+            handlerHolder.postDelayed(r , delayMillis);
+        }
+    }
+        // 通过反射机制获取手机状态栏高度
     private int getStatusBarHeight() {
         Class<?> c = null;
         Object obj = null;
@@ -74,16 +69,6 @@ public abstract class BaseActivity extends FragmentActivity{
         return statusBarHeight;
     }
 
-    public void setStatusBarAfter() {
-        // 创建TextView用于叠加StatusBar的颜色块
-        textView = new TextView(this);
-        LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, getStatusBarHeight());
-        textView.setLayoutParams(lParams);
-        // 获得根视图并把TextView加进去。
-        ViewGroup view = (ViewGroup) getWindow().getDecorView();
-        view.addView(textView);
-    }
-
     public void setStatusBarAfter(String colorString) {
         // 创建TextView用于叠加StatusBar的颜色块
         textView = new TextView(this);
@@ -94,6 +79,7 @@ public abstract class BaseActivity extends FragmentActivity{
         ViewGroup view = (ViewGroup) getWindow().getDecorView();
         view.addView(textView);
     }
+
     /**
      * 打开新的Activity
      **/
@@ -162,4 +148,8 @@ public abstract class BaseActivity extends FragmentActivity{
         finish();
     }
 
+    @Override
+    public void handlerMessage(Message msg) {
+
+    }
 }

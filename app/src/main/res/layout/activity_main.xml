@@ -17,19 +17,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.hero.gsyvideoplayerdemo.ZoomableImageView2
-            android:id="@+id/ziv_2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-
-        <!--   <ImageView
-               android:id="@+id/iv_3"
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:src="@mipmap/ic_launcher"
-               />-->
-
     </com.hero.gsyvideoplayerdemo.CustomFrameLayout>
 
 </RelativeLayout>

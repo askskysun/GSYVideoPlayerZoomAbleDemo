@@ -6,7 +6,7 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.Environment;
 import android.support.v4.view.ViewCompat;
 import android.transition.Transition;
 import android.view.MotionEvent;
@@ -25,7 +25,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends BaseActivity implements DispatchTouchEventListener, ZoomViewTouchEventListener {
+public class MainActivity extends BaseActivity implements DispatchTouchEventListener{
     public final static String IMG_TRANSITION = "IMG_TRANSITION";
     public final static String TRANSITION = "TRANSITION";
 
@@ -37,17 +37,12 @@ public class MainActivity extends BaseActivity implements DispatchTouchEventList
     @BindView(R.id.frm)
     CustomFrameLayout frm;
 
-    @BindView(R.id.ziv_2)
-    ZoomableImageView2 mZiv2;
     OrientationUtils orientationUtils;
 
     private boolean isTransition;
 
     private Transition transition;
     TouchListener mTouchListener;
-
-    private float[] mFirstTransformation = new float[9];     //最初的矩阵
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,10 +57,7 @@ public class MainActivity extends BaseActivity implements DispatchTouchEventList
 //        .logStrategy(customLog) // (Optional) Changes the log strategy to print out. Default LogCat
                 .build();
         Logger.addLogAdapter(new AndroidLogAdapter(formatStrategy));
-
-        mFirstTransformation = new float[]{1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
         frm.setDispatchTouchEventListener(this);
-        mZiv2.setmZoomViewTouchEventListener(this);
         mTouchListener = new TouchListener();
         init();
     }
@@ -78,40 +70,36 @@ public class MainActivity extends BaseActivity implements DispatchTouchEventList
         //videoPlayer.setUp(url, true, new File(FileUtils.getPath()), "");
 
         //借用了jjdxm_ijkplayer的URL
-        String source1 = "http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4";
+//        String source1 = "http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4";
 //        String source1 = "http://1253492636.vod2.myqcloud.com/2e5fc148vodgzp1253492636/677f7ef57447398154657427328/cuM4k64ZGGQA.mp4";
 //        String source1 = Environment.getExternalStorageDirectory() + "/record_20180207171537-1.mp4";
-//        String source1 = Environment.getExternalStorageDirectory() + "/test.mp4";
+        String source1 = Environment.getExternalStorageDirectory() + "/test.mp4";
         String name = "普通";
         SwitchVideoModel switchVideoModel = new SwitchVideoModel(name, source1);
 
-        String source2 = "http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f30.mp4";
-        String name2 = "清晰";
-        SwitchVideoModel switchVideoModel2 = new SwitchVideoModel(name2, source2);
+//        String source2 = "http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f30.mp4";
+//        String name2 = "清晰";
+//        SwitchVideoModel switchVideoModel2 = new SwitchVideoModel(name2, source2);
 
         List<SwitchVideoModel> list = new ArrayList<>();
         list.add(switchVideoModel);
-        list.add(switchVideoModel2);
-        videoPlayer.setUp(list, true, "测试视频");
+//        list.add(switchVideoModel2);
+        videoPlayer.setUp(list, true, "病例视频");
 
         //增加封面
         ImageView imageView = new ImageView(this);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        //todo   加载封面
         imageView.setImageResource(R.mipmap.xxx1);
         videoPlayer.setThumbImageView(imageView);
-
         //增加title
         videoPlayer.getTitleTextView().setVisibility(View.GONE);
         //videoPlayer.setShowPauseCover(false);
-
         //videoPlayer.setSpeed(2f);
-
         //设置返回键
         videoPlayer.getBackButton().setVisibility(View.VISIBLE);
-
         //设置旋转
         orientationUtils = new OrientationUtils(this, videoPlayer);
-
         //设置全屏按键功能,这是使用的是选择屏幕，而不是全屏
         videoPlayer.getFullscreenButton().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,11 +170,7 @@ public class MainActivity extends BaseActivity implements DispatchTouchEventList
     protected void onResume() {
         super.onResume();
         videoPlayer.onVideoResume();
-        try {
-            videoPlayer.setPreView3();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        videoPlayer.setPreView4();
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -210,13 +194,13 @@ public class MainActivity extends BaseActivity implements DispatchTouchEventList
         if (isTransition && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             super.onBackPressed();
         } else {
-            new Handler().postDelayed(new Runnable() {
+            setHandlerPostDelayed(new Runnable() {
                 @Override
                 public void run() {
                     finish();
                     overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
                 }
-            }, 500);
+            } , 500);
         }
     }
 
@@ -255,15 +239,8 @@ public class MainActivity extends BaseActivity implements DispatchTouchEventList
     }
 
     @Override
-    public void zoomViewTouch(Matrix matrix) {
-//        videoPlayer.setMoreScale(matrix);
-    }
-
-    @Override
     public void dispatchTouch(MotionEvent ev) {
-//        mZiv2.setTouchEvent(ev);
         mTouchListener.onTouch(videoPlayer, ev);
-
     }
 
     /**
@@ -450,7 +427,6 @@ public class MainActivity extends BaseActivity implements DispatchTouchEventList
 //            Logger.t("getLocationOnScreen").d(Arrays.toString(location));
 //                midX = (float) ((event.getX(1) + event.getX(0) - location[0] * 2) * ratioX / 2);
 //                midY = (float) ((event.getY(1) + event.getY(0) - location[1] * 2) * ratioY / 2);
-
                 midX = (float) ((event.getX(1) + event.getX(0) - location[0] * 2) / 2);
                 midY = (float) ((event.getY(1) + event.getY(0) - location[1] * 2) / 2);
 //            Logger.t("getY").d(midX + "         " + midY);

@@ -58,7 +58,8 @@
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
             android:progressDrawable="@drawable/video_seek_progress"
-            android:thumb="@drawable/video_seek_thumb" />
+            android:thumb="@drawable/video_seek_thumb"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/total"

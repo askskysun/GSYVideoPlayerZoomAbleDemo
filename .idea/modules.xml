@@ -5,7 +5,6 @@
       <module fileurl="file://D:\demo\GSYVideoPlayerZoomDemo\GSYVideoPlayerDemo.iml" filepath="D:\demo\GSYVideoPlayerZoomDemo\GSYVideoPlayerDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/PlayerZoomDemo.iml" filepath="$PROJECT_DIR$/PlayerZoomDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
     </modules>
   </component>
 </project>
