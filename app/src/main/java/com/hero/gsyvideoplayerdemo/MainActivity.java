@@ -163,11 +163,8 @@ public class MainActivity extends BaseActivity implements DispatchTouchEventList
          * @param releaseWhenLossAudio 默认true，false的时候只会暂停
          */
         videoPlayer.setReleaseWhenLossAudio(false);
-        videoPlayer.setOpenPreView(true);
-
         //过渡动画
         initTransition();
-//        GSYPreViewManager.instance().getMediaPlayer().get
     }
 
     @Override
@@ -185,13 +182,11 @@ public class MainActivity extends BaseActivity implements DispatchTouchEventList
     protected void onResume() {
         super.onResume();
         videoPlayer.onVideoResume();
-
         try {
-            videoPlayer.setPreView();
+            videoPlayer.setPreView3();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)

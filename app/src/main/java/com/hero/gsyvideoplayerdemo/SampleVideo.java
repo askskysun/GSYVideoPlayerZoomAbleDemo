@@ -9,26 +9,29 @@ import android.util.AttributeSet;
 import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.dyhdyh.compat.mmrc.MediaMetadataRetrieverCompat;
 import com.orhanobut.logger.Logger;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType;
-import com.shuyu.gsyvideoplayer.video.CustomGSYVideoPlayer;
+import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYBaseVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import tv.danmaku.ijk.media.player.IMediaPlayer;
 
 /**
  * Created by shuyu on 2016/12/7.
@@ -43,7 +46,7 @@ import java.util.List;
  */
 
 
-public class SampleVideo extends CustomGSYVideoPlayer {
+public class SampleVideo extends StandardGSYVideoPlayer implements MyHorizontalScrollView.ScrollViewListener {
     private static final String TAG = "SampleVideo";
     private TextView mMoreScale;
 
@@ -66,6 +69,9 @@ public class SampleVideo extends CustomGSYVideoPlayer {
     private String mTypeText = "标准";
 
     private LinearLayout mLinSeekpreview;
+    private MyHorizontalScrollView mHsvSeekpreview;
+    private int mSeekLegth = 0;
+    private long mDurationVideo;
 
     /**
      * 1.5.0开始加入，如果需要不同布局区分功能，需要重载
@@ -94,6 +100,9 @@ public class SampleVideo extends CustomGSYVideoPlayer {
         mChangeRotate = (TextView) findViewById(R.id.change_rotate);
         mChangeTransform = (TextView) findViewById(R.id.change_transform);
         mLinSeekpreview = (LinearLayout) findViewById(R.id.lin_seekpreview);
+        mHsvSeekpreview = (MyHorizontalScrollView) findViewById(R.id.hsv_seekpreview);
+        mHsvSeekpreview.setmScrollViewListener(this);
+
         //切换清晰度
         mMoreScale.setOnClickListener(new OnClickListener() {
             @Override
@@ -158,7 +167,6 @@ public class SampleVideo extends CustomGSYVideoPlayer {
                 resolveTransform();
             }
         });
-
     }
 
     /**
@@ -226,7 +234,97 @@ public class SampleVideo extends CustomGSYVideoPlayer {
         return setUp(url.get(mSourcePosition).getUrl(), cacheWithPlay, title);
     }
 
-    public void setPreView() throws Exception{
+    private int mCurrentTime;
+
+    public void setPreView3() throws Exception {
+        mLinSeekpreview.removeAllViews();
+        mCurrentTime = 0;
+        final Handler handler = new Handler();
+        handler.postAtTime(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    IMediaPlayer mediaPlayer = getGSYVideoManager().getMediaPlayer();
+                    if (mediaPlayer != null) {
+                        mDurationVideo = mediaPlayer.getDuration();
+                        if (mDurationVideo != 0) {
+                            Logger.t(TAG).v("--duration------------" + mDurationVideo);
+                            Logger.t(TAG).v("--mUrlList.get(mSourcePosition).getUrl()------------" + mUrlList.get(mSourcePosition).getUrl());
+                            for (int i = 0; i < 21; i++) {
+                                Logger.t(TAG).v("--currentTime------------" + mCurrentTime);
+                                ImageView imageView = new ImageView(mContext);
+                                ViewsizeUtils.viewSizeLin(mContext, imageView, 120 * 3, 72 * 3);
+                                Glide.with(getContext().getApplicationContext())
+                                        .setDefaultRequestOptions(
+                                                new RequestOptions()
+                                                        .frame(1000 * mCurrentTime)
+                                                        .override(120, 72)
+                                                        .dontAnimate()
+                                                        .centerCrop())
+                                        .load(mUrlList.get(mSourcePosition).getUrl())
+                                        .into(imageView);
+                                mLinSeekpreview.addView(imageView);
+                                mCurrentTime += mDurationVideo / 20;
+                            }
+
+                            ViewTreeObserver viewTreeObserver = mLinSeekpreview.getViewTreeObserver();
+                            viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                                @Override
+                                public boolean onPreDraw() {
+                                    //观察者  此方法会不断打印  要获取到值就停止赋值
+                                    int width = mLinSeekpreview.getWidth();
+                                    if (mSeekLegth == 0) {
+                                        mSeekLegth = width;
+                                        Logger.t(TAG).v("mLinSeekpreview--width------------" + mSeekLegth);
+                                    }
+                                    return true;
+                                }
+                            });
+                        }
+                    }
+                    handler.removeCallbacks(this);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 50);
+    }
+
+    public void setPreView2() throws Exception {
+        mLinSeekpreview.removeAllViews();
+        int currentTime = 0;
+        mDurationVideo = getGSYVideoManager().getMediaPlayer().getDuration();
+//自动 - 推荐
+        MediaMetadataRetrieverCompat mmrc = new MediaMetadataRetrieverCompat();
+        mmrc.setMediaDataSource(mUrlList.get(mSourcePosition).getUrl());
+        for (int i = 0; i < 21; i++) {
+//            try {
+//                Thread.sleep(500);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+            currentTime += mDurationVideo / 20;
+            Logger.t(TAG).v("--currentTime------------" + currentTime);
+            Bitmap bitmap = mmrc.getScaledFrameAtTime(currentTime * 1000, MediaMetadataRetrieverCompat.OPTION_CLOSEST, 120, 72);
+
+            ImageView imageView = new ImageView(mContext);
+            ViewsizeUtils.viewSizeLin(mContext, imageView, 120 * 3, 72 * 3);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 60, baos);
+            byte[] bytes = baos.toByteArray();
+
+            Glide.with(mContext)
+                    .load(bytes)
+                    .into(imageView);
+//            imageView.setImageBitmap(bitmap);
+            mLinSeekpreview.addView(imageView);
+            bitmap.recycle();
+        }
+
+        //获取指定位置指定宽高的缩略图
+    }
+
+    public void setPreView1() throws Exception {
         mLinSeekpreview.removeAllViews();
 
         Logger.t(TAG).v("--mUrlList.get(mSourcePosition).getUrl()------------" + mUrlList.get(mSourcePosition).getUrl());
@@ -236,8 +334,8 @@ public class SampleVideo extends CustomGSYVideoPlayer {
 
         int currentTime = 0;
 
-        long duration = getGSYVideoManager().getMediaPlayer().getDuration();
-        Logger.t(TAG).v("--duration------------" + duration);
+        mDurationVideo = getGSYVideoManager().getMediaPlayer().getDuration();
+        Logger.t(TAG).v("--duration------------" + mDurationVideo);
 
         for (int i = 0; i < 21; i++) {
 //            try {
@@ -245,40 +343,21 @@ public class SampleVideo extends CustomGSYVideoPlayer {
 //            } catch (InterruptedException e) {
 //                e.printStackTrace();
 //            }
-            currentTime += duration / 20;
+            currentTime += mDurationVideo / 20;
             Logger.t(TAG).v("--currentTime------------" + currentTime);
 
             Bitmap bitmap = mmr.
-                    getFrameAtTime(currentTime  * 1000, MediaMetadataRetriever.OPTION_CLOSEST);
-            Logger.t(TAG).v("--------------" + currentTime  * 1000);
-            File aaaview = FileUtils.createImageFile("AAAVIEW");
-            FileOutputStream fileOutputStream = null;
-            try {
-                fileOutputStream = new FileOutputStream(aaaview.getAbsolutePath());
-                bitmap.compress(Bitmap.CompressFormat.PNG, 90, fileOutputStream);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Logger.t(TAG).e("--fileOutputStream------------" + e);
-
-            } finally {
-                if (fileOutputStream != null) {
-                    try {
-                        fileOutputStream.close();
-                    } catch (IOException e) {
-                        Logger.t(TAG).e("-- fileOutputStream.close();------------" + e);
-                        e.printStackTrace();
-                    }
-                }
-            }
+                    getFrameAtTime(currentTime * 1000, MediaMetadataRetriever.OPTION_CLOSEST);
             ImageView imageView = new ImageView(mContext);
-            ViewsizeUtils.viewSizeLin(mContext , imageView ,120*3,72 *3);
+            ViewsizeUtils.viewSizeLin(mContext, imageView, 120 * 3, 72 * 3);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 60, baos);
-            byte[] bytes=baos.toByteArray();
+            byte[] bytes = baos.toByteArray();
 
             Glide.with(mContext)
                     .load(bytes)
                     .into(imageView);
+//            imageView.setImageBitmap(bitmap);
             mLinSeekpreview.addView(imageView);
             bitmap.recycle();
         }
@@ -449,5 +528,16 @@ public class SampleVideo extends CustomGSYVideoPlayer {
             }
         });
         switchVideoTypeDialog.show();
+    }
+
+    @Override
+    public void onScrollChanged(int scrollSeek) {
+        Logger.t("onScrollChanged").v("--onScrollChanged-----scrollSeek-------" + scrollSeek);
+        Logger.t("onScrollChanged").v("onScrollChanged--mDurationVideo------------" + mDurationVideo);
+        Logger.t("onScrollChanged").v("onScrollChanged--mSeekLegth------------" + mSeekLegth);
+        Logger.t("onScrollChanged").v("--onScrollChanged-----(long) scrollSeek / (long) mSeekLegth-------" + (double) scrollSeek / (double) mSeekLegth);
+        Logger.t("onScrollChanged").v("onScrollChanged--seek------------" + (double) scrollSeek / (double) mSeekLegth * mDurationVideo);
+        seekTo((long) ((double) scrollSeek / (double) mSeekLegth * mDurationVideo));
+
     }
 }

@@ -219,7 +219,8 @@
         android:layout_marginBottom="30dp"
         android:visibility="gone" />
 
-    <HorizontalScrollView
+    <com.hero.gsyvideoplayerdemo.MyHorizontalScrollView
+        android:id="@+id/hsv_seekpreview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -231,6 +232,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal" />
 
-    </HorizontalScrollView>
+    </com.hero.gsyvideoplayerdemo.MyHorizontalScrollView>
 
 </RelativeLayout>
