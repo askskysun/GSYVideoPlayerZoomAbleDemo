@@ -1,4 +1,4 @@
-package com.hero.gsyvideoplayerdemo;
+package com.hero.gsyvideoplayerdemo.gsyjikplayer;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -18,6 +18,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.hero.gsyvideoplayerdemo.MyHorizontalScrollView;
+import com.hero.gsyvideoplayerdemo.R;
+import com.hero.gsyvideoplayerdemo.SwitchVideoModel;
+import com.hero.gsyvideoplayerdemo.SwitchVideoTypeDialog;
+import com.hero.gsyvideoplayerdemo.ViewsizeUtils;
 import com.orhanobut.logger.Logger;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType;
@@ -90,6 +95,23 @@ public class SampleVideo extends StandardGSYVideoPlayer implements MyHorizontalS
     protected void init(Context context) {
         super.init(context);
         initView();
+    }
+
+    /**
+     * 设置   进度条是否显示
+     * @param isVisibity
+     */
+    private void setHsvSeekpreviewVisibity(boolean isVisibity) {
+        if (isVisibity) {
+            if (mHsvSeekpreview.getVisibility() != VISIBLE) {
+                mHsvSeekpreview.setVisibility(VISIBLE);
+                mHsvSeekpreview.smoothScrollTo(0,0);
+            }
+        }else {
+            if (mHsvSeekpreview.getVisibility() != GONE) {
+                mHsvSeekpreview.setVisibility(GONE);
+            }
+        }
     }
 
     private void initView() {
@@ -242,7 +264,6 @@ public class SampleVideo extends StandardGSYVideoPlayer implements MyHorizontalS
 
     public void setPreView4() {
         String urlVideo = mUrlList.get(mSourcePosition).getUrl();
-
         try {
             //第一次打开   getGSYVideoManager().getMediaPlayer()会为空  定时获取也不行
             mDurationVideo = getGSYVideoManager().getMediaPlayer().getDuration();
@@ -254,7 +275,7 @@ public class SampleVideo extends StandardGSYVideoPlayer implements MyHorizontalS
                 MediaMetadataRetriever retriever = new MediaMetadataRetriever();
                 if (isNetVideo(urlVideo)) {
                     retriever.setDataSource(urlVideo, new HashMap<String, String>());
-                }else {
+                } else {
                     retriever.setDataSource(urlVideo);
                 }
                 // 取得视频的长度(单位为毫秒)
@@ -400,6 +421,35 @@ public class SampleVideo extends StandardGSYVideoPlayer implements MyHorizontalS
             setUp(mUrlList, mCache, mCachePath, mTitle);
             resolveTypeUI();
         }
+    }
+
+    @Override
+    public void startAfterPrepared() {
+        super.startAfterPrepared();
+        Logger.t(TAG).v("---startAfterPrepared-----------");
+        setHsvSeekpreviewVisibity(true);
+    }
+
+    @Override
+    public void onCompletion() {
+        super.onCompletion();
+        Logger.t(TAG).v("---onCompletion-----------");
+        setHsvSeekpreviewVisibity(false);
+    }
+
+    //播放出错
+    @Override
+    public void onError(int what, int extra) {
+        super.onError(what, extra);
+        Logger.t(TAG).v("---onError-----------");
+        setHsvSeekpreviewVisibity(false);
+    }
+
+    @Override
+    public void onAutoCompletion() {
+        super.onAutoCompletion();
+        Logger.t(TAG).v("---onAutoCompletion-----------");
+        setHsvSeekpreviewVisibity(false);
     }
 
     /**

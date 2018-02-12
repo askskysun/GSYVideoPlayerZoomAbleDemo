@@ -1,4 +1,4 @@
-package com.hero.gsyvideoplayerdemo;
+package com.hero.gsyvideoplayerdemo.gsyjikplayer;
 
 import android.annotation.TargetApi;
 import android.content.pm.ActivityInfo;
@@ -14,6 +14,15 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.hero.gsyvideoplayerdemo.BaseActivity;
+import com.hero.gsyvideoplayerdemo.CustomFrameLayout;
+import com.hero.gsyvideoplayerdemo.DispatchTouchEventListener;
+import com.hero.gsyvideoplayerdemo.OnTransitionListener;
+import com.hero.gsyvideoplayerdemo.OrientationUtils;
+import com.hero.gsyvideoplayerdemo.R;
+import com.hero.gsyvideoplayerdemo.SwitchVideoModel;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.FormatStrategy;
 import com.orhanobut.logger.Logger;
@@ -25,7 +34,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends BaseActivity implements DispatchTouchEventListener{
+public class MainActivity extends BaseActivity implements DispatchTouchEventListener {
     public final static String IMG_TRANSITION = "IMG_TRANSITION";
     public final static String TRANSITION = "TRANSITION";
 
@@ -90,7 +99,17 @@ public class MainActivity extends BaseActivity implements DispatchTouchEventList
         ImageView imageView = new ImageView(this);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         //todo   加载封面
-        imageView.setImageResource(R.mipmap.xxx1);
+        SwitchVideoModel switchVideoModel1 = list.get(0);
+        Glide.with(this)
+                .setDefaultRequestOptions(
+                        new RequestOptions()
+                                .frame(500)
+                                .dontAnimate()
+                                .centerCrop())
+                .load(switchVideoModel1.getUrl())
+                .into(imageView);
+
+
         videoPlayer.setThumbImageView(imageView);
         //增加title
         videoPlayer.getTitleTextView().setVisibility(View.GONE);
@@ -414,7 +433,6 @@ public class MainActivity extends BaseActivity implements DispatchTouchEventList
             try {
 //            Logger.t("midgetX").d(event.getX(0) + "         " + event.getX(1));
 //            Logger.t("midgetY").d(event.getY(0) + "         " + event.getY(1));
-
                 //计算比例    横竖屏切换  不可写死比例
 //                double ratioX = (double) videoPlayer.getWidth() / (double) DensityUtils.getScreenW(MainActivity.this);
 //                double ratioY = (double) videoPlayer.getHeight() / (double) DensityUtils.getScreenH(MainActivity.this);
