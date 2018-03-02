@@ -280,6 +280,7 @@ public class SampleVideo extends StandardGSYVideoPlayer implements MyHorizontalS
                 new VideoOptionModel(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 10240);
         List<VideoOptionModel> list = new ArrayList<>();
         list.add(videoOptionModel);
+        //第三个参数设置延迟  越低延迟越低   原来100   单位ms
         videoOptionModel =
                 new VideoOptionModel(1, "analyzemaxduration", 5);
         list.add(videoOptionModel);

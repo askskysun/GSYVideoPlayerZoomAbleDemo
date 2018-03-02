@@ -183,17 +183,6 @@ public class GSYVideoPlayerActivity extends BaseActivity implements DispatchTouc
         //过渡动画
         initTransition();
     }
-/*    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            // 加入横屏要处理的代码
-            Logger.t(TAG).v("-onConfigurationChanged-------------" + "横屏");
-        } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            // 加入竖屏要处理的代码
-            Logger.t(TAG).v("-onConfigurationChanged-------------" + "竖屏");
-            //todo 点击全屏和关闭全屏也要操作
-        }
-    }*/
     @Override
     protected void onPause() {
         super.onPause();
