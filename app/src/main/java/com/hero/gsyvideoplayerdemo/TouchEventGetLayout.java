@@ -8,18 +8,17 @@ import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
 /**
- *   吧dispatchTouchEvent 事件监听暴露出来
+ *   吧dispatchTouchEvent 事件监听暴露出来   用户获取不到 view的touch事件  从父类拦截
  */
-public class CustomFrameLayout extends FrameLayout {
+public class TouchEventGetLayout extends FrameLayout {
 
      DispatchTouchEventListener dispatchTouchEventListener;
 
-
-    public CustomFrameLayout(@NonNull Context context) {
+    public TouchEventGetLayout(@NonNull Context context) {
         super(context);
     }
 
-    public CustomFrameLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public TouchEventGetLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 

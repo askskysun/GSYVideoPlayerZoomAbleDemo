@@ -6,23 +6,20 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.view.ViewCompat;
 import android.transition.Transition;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.hero.gsyvideoplayerdemo.BaseActivity;
-import com.hero.gsyvideoplayerdemo.CustomFrameLayout;
 import com.hero.gsyvideoplayerdemo.DispatchTouchEventListener;
-import com.hero.gsyvideoplayerdemo.OnTransitionListener;
-import com.hero.gsyvideoplayerdemo.OrientationUtils;
 import com.hero.gsyvideoplayerdemo.R;
-import com.hero.gsyvideoplayerdemo.SwitchVideoModel;
+import com.hero.gsyvideoplayerdemo.TouchEventGetLayout;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.FormatStrategy;
 import com.orhanobut.logger.Logger;
@@ -34,7 +31,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends BaseActivity implements DispatchTouchEventListener {
+public class GSYVideoPlayerActivity extends BaseActivity implements DispatchTouchEventListener {
     public final static String IMG_TRANSITION = "IMG_TRANSITION";
     public final static String TRANSITION = "TRANSITION";
 
@@ -44,8 +41,9 @@ public class MainActivity extends BaseActivity implements DispatchTouchEventList
     RelativeLayout activity_play;
 
     @BindView(R.id.frm)
-    CustomFrameLayout frm;
-
+    TouchEventGetLayout frm;
+    @BindView(R.id.iv)
+    ImageView iv;
     OrientationUtils orientationUtils;
 
     private boolean isTransition;
@@ -55,7 +53,7 @@ public class MainActivity extends BaseActivity implements DispatchTouchEventList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_gsy);
         ButterKnife.bind(this);
         isTransition = getIntent().getBooleanExtra(TRANSITION, false);
 
@@ -72,7 +70,7 @@ public class MainActivity extends BaseActivity implements DispatchTouchEventList
     }
 
     private void init() {
-        String url = "https://res.exexm.com/cw_145225549855002";
+//        String url = "https://res.exexm.com/cw_145225549855002";
 
         //String url = "http://7xse1z.com1.z0.glb.clouddn.com/1491813192";
         //需要路径的
@@ -82,7 +80,9 @@ public class MainActivity extends BaseActivity implements DispatchTouchEventList
 //        String source1 = "http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4";
 //        String source1 = "http://1253492636.vod2.myqcloud.com/2e5fc148vodgzp1253492636/677f7ef57447398154657427328/cuM4k64ZGGQA.mp4";
 //        String source1 = Environment.getExternalStorageDirectory() + "/record_20180207171537-1.mp4";
-        String source1 = Environment.getExternalStorageDirectory() + "/test.mp4";
+//        String source1 = Environment.getExternalStorageDirectory() + "/test.mp4";
+//        String source1 = "rtmp://live.hkstv.hk.lxdns.com/live/hks";
+        String source1 = "rtmp://10368.liveplay.myqcloud.com/live/10368_e6756ab2dd";
         String name = "普通";
         SwitchVideoModel switchVideoModel = new SwitchVideoModel(name, source1);
 
@@ -108,7 +108,10 @@ public class MainActivity extends BaseActivity implements DispatchTouchEventList
                                 .centerCrop())
                 .load(switchVideoModel1.getUrl())
                 .into(imageView);
-
+        //测试
+      /*  Glide.with(this)
+                .load("http://img.ibingli.cn/activity/startuppage/startup_2018_newyear1.jpg")
+                .into(iv);*/
 
         videoPlayer.setThumbImageView(imageView);
         //增加title
@@ -126,7 +129,6 @@ public class MainActivity extends BaseActivity implements DispatchTouchEventList
                 orientationUtils.resolveByClick();
             }
         });
-
         //videoPlayer.setBottomProgressBarDrawable(getResources().getDrawable(R.drawable.video_new_progress));
         //videoPlayer.setDialogVolumeProgressBar(getResources().getDrawable(R.drawable.video_new_volume_progress_bg));
         //videoPlayer.setDialogProgressBar(getResources().getDrawable(R.drawable.video_new_progress));
@@ -170,10 +172,28 @@ public class MainActivity extends BaseActivity implements DispatchTouchEventList
          * @param releaseWhenLossAudio 默认true，false的时候只会暂停
          */
         videoPlayer.setReleaseWhenLossAudio(false);
+
+        /** orientationUtils **/
+        orientationUtils.setmOrientationChangeListener(new OrientationUtils.OrientationChangeListener() {
+            @Override
+            public void onOrientationChange(boolean isVertical) {
+                Toast.makeText(self, "" +isVertical , Toast.LENGTH_SHORT).show();
+            }
+        });
         //过渡动画
         initTransition();
     }
-
+/*    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // 加入横屏要处理的代码
+            Logger.t(TAG).v("-onConfigurationChanged-------------" + "横屏");
+        } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            // 加入竖屏要处理的代码
+            Logger.t(TAG).v("-onConfigurationChanged-------------" + "竖屏");
+            //todo 点击全屏和关闭全屏也要操作
+        }
+    }*/
     @Override
     protected void onPause() {
         super.onPause();

@@ -1,4 +1,4 @@
-package com.hero.gsyvideoplayerdemo;
+package com.hero.gsyvideoplayerdemo.gsyjikplayer;
 
 /**
  * Created by shuyu on 2016/12/7.

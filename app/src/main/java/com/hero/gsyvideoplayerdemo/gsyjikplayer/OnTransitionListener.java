@@ -1,4 +1,4 @@
-package com.hero.gsyvideoplayerdemo;
+package com.hero.gsyvideoplayerdemo.gsyjikplayer;
 
 import android.annotation.TargetApi;
 import android.os.Build;

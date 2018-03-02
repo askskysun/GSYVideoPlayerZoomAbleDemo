@@ -7,7 +7,7 @@
     android:clipToPadding="true"
     android:fitsSystemWindows="true" >
 
-    <com.hero.gsyvideoplayerdemo.CustomFrameLayout
+    <com.hero.gsyvideoplayerdemo.TouchEventGetLayout
         android:id="@+id/frm"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -17,6 +17,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-    </com.hero.gsyvideoplayerdemo.CustomFrameLayout>
+    </com.hero.gsyvideoplayerdemo.TouchEventGetLayout>
+
+    <ImageView
+        android:id="@+id/iv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 
 </RelativeLayout>

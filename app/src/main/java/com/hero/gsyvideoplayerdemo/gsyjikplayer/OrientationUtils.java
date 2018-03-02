@@ -1,4 +1,4 @@
-package com.hero.gsyvideoplayerdemo;
+package com.hero.gsyvideoplayerdemo.gsyjikplayer;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
@@ -17,6 +17,14 @@ public class OrientationUtils {
     private Activity activity;
     private GSYBaseVideoPlayer gsyVideoPlayer;
     private OrientationEventListener orientationEventListener;
+
+    public interface OrientationChangeListener {
+        void onOrientationChange(boolean isVertical);
+    }
+    private OrientationChangeListener mOrientationChangeListener;
+    public void setmOrientationChangeListener(OrientationChangeListener mOrientationChangeListener) {
+        this.mOrientationChangeListener = mOrientationChangeListener;
+    }
 
     private int screenType = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
     private int mIsLand;
@@ -37,16 +45,26 @@ public class OrientationUtils {
 
     private void init() {
         orientationEventListener = new OrientationEventListener(activity) {
+
+            private boolean isVertical;     //是竖屏
+
             @Override
             public void onOrientationChanged(int rotation) {
                 boolean autoRotateOn = (Settings.System.getInt(activity.getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0) == 1);
                 if (!autoRotateOn && mRotateWithSystem) {
                     //if (mIsLand == 0) {
-                        return;
+                    return;
                     //}
                 }
                 // 设置竖屏
                 if (((rotation >= 0) && (rotation <= 30)) || (rotation >= 330)) {
+                    if (!isVertical) {
+                        isVertical = true;
+                        if (mOrientationChangeListener != null) {
+                            mOrientationChangeListener.onOrientationChange(isVertical);
+                        }
+                    }
+
                     if (mClick) {
                         if (mIsLand > 0 && !mClickLand) {
                             return;
@@ -71,6 +89,12 @@ public class OrientationUtils {
                 }
                 // 设置横屏
                 else if (((rotation >= 230) && (rotation <= 310))) {
+                    if (isVertical) {
+                        isVertical = false;
+                        if (mOrientationChangeListener != null) {
+                            mOrientationChangeListener.onOrientationChange(isVertical);
+                        }
+                    }
                     if (mClick) {
                         if (!(mIsLand == 1) && !mClickPort) {
                             return;
@@ -91,6 +115,12 @@ public class OrientationUtils {
                 }
                 // 设置反向横屏
                 else if (rotation > 30 && rotation < 95) {
+                    if (isVertical) {
+                        isVertical = false;
+                        if (mOrientationChangeListener != null) {
+                            mOrientationChangeListener.onOrientationChange(isVertical);
+                        }
+                    }
                     if (mClick) {
                         if (!(mIsLand == 2) && !mClickPort) {
                             return;
@@ -221,9 +251,12 @@ public class OrientationUtils {
 
     /**
      * 是否更新系统旋转，false的话，系统禁止旋转也会跟着旋转
+     *
      * @param rotateWithSystem 默认true
      */
     public void setRotateWithSystem(boolean rotateWithSystem) {
         this.mRotateWithSystem = rotateWithSystem;
     }
+
+
 }

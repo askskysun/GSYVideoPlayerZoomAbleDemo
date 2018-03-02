@@ -1,4 +1,4 @@
-package com.hero.gsyvideoplayerdemo;
+package com.hero.gsyvideoplayerdemo.gsyjikplayer;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -11,6 +11,8 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.hero.gsyvideoplayerdemo.R;
 
 import java.util.List;
 
@@ -45,10 +47,10 @@ public class SwitchVideoTypeDialog extends Dialog {
         this.data = data;
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.switch_video_dialog, null);
+        View view = inflater.inflate(R.layout.layout_gsy_switch_video_dialog, null);
         listView = (ListView) view.findViewById(R.id.switch_dialog_list);
         setContentView(view);
-        adapter = new ArrayAdapter<>(mContext, R.layout.switch_video_dialog_item, data);
+        adapter = new ArrayAdapter<>(mContext, R.layout.layout_gsy_switch_video_dialog_item, data);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new OnItemClickListener());
 

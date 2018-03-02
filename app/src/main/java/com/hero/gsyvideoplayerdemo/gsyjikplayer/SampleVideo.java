@@ -18,13 +18,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.hero.gsyvideoplayerdemo.MyHorizontalScrollView;
 import com.hero.gsyvideoplayerdemo.R;
-import com.hero.gsyvideoplayerdemo.SwitchVideoModel;
-import com.hero.gsyvideoplayerdemo.SwitchVideoTypeDialog;
 import com.hero.gsyvideoplayerdemo.ViewsizeUtils;
 import com.orhanobut.logger.Logger;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
+import com.shuyu.gsyvideoplayer.model.VideoOptionModel;
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYBaseVideoPlayer;
@@ -35,6 +33,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 /**
  * Created by shuyu on 2016/12/7.
@@ -95,6 +95,11 @@ public class SampleVideo extends StandardGSYVideoPlayer implements MyHorizontalS
     protected void init(Context context) {
         super.init(context);
         initView();
+    }
+
+    @Override
+    protected void changeUiToCompleteShow() {
+        super.changeUiToCompleteShow();
     }
 
     /**
@@ -259,7 +264,26 @@ public class SampleVideo extends StandardGSYVideoPlayer implements MyHorizontalS
         if (url.startsWith("http")) {
             return true;
         }
+
+        if (url.startsWith("rtmp") || url.startsWith("rtsp")) {
+            setLowDelay();
+            return true;
+        }
         return false;
+    }
+
+    /**
+     *  设置直播超低延迟
+     */
+    private void setLowDelay() {
+        VideoOptionModel videoOptionModel =
+                new VideoOptionModel(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 10240);
+        List<VideoOptionModel> list = new ArrayList<>();
+        list.add(videoOptionModel);
+        videoOptionModel =
+                new VideoOptionModel(1, "analyzemaxduration", 5);
+        list.add(videoOptionModel);
+        GSYVideoManager.instance().setOptionModelList(list);
     }
 
     public void setPreView4() {
@@ -373,7 +397,7 @@ public class SampleVideo extends StandardGSYVideoPlayer implements MyHorizontalS
 
     @Override
     public int getLayoutId() {
-        return R.layout.sample_video;
+        return R.layout.layout_gsy_sample_video;
     }
 
     /**
