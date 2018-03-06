@@ -2,6 +2,7 @@ package com.hero.gsyvideoplayerdemo.gsyjikplayer;
 
 import android.annotation.TargetApi;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.os.Build;
@@ -24,6 +25,7 @@ import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.FormatStrategy;
 import com.orhanobut.logger.Logger;
 import com.orhanobut.logger.PrettyFormatStrategy;
+import com.shuyu.gsyvideoplayer.listener.VideoAllCallBack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +52,7 @@ public class GSYVideoPlayerActivity extends BaseActivity implements DispatchTouc
 
     private Transition transition;
     TouchListener mTouchListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,22 +70,38 @@ public class GSYVideoPlayerActivity extends BaseActivity implements DispatchTouc
         frm.setDispatchTouchEventListener(this);
         mTouchListener = new TouchListener();
         init();
+
+        //         横竖屏切换时，会重启activity   做个判断
+        int mCurrentOrientation = getResources().getConfiguration().orientation;
+        if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+//           竖屏
+        } else {
+//           横屏
+        }
+
     }
 
     private void init() {
-//        String url = "https://res.exexm.com/cw_145225549855002";
+        /**
+         *  设置右下角 显示切换到全屏 的按键资源
+         * 必须在setUp之前设置
+         */
+//        videoPlayer.setEnlargeImageRes(R.drawable.discover_btn_full_normal3x);
+//        videoPlayer.setShrinkImageRes(R.drawable.discover_btn_shrink_normal3x);
 
+//        String url = "https://res.exexm.com/cw_145225549855002";
         //String url = "http://7xse1z.com1.z0.glb.clouddn.com/1491813192";
         //需要路径的
         //videoPlayer.setUp(url, true, new File(FileUtils.getPath()), "");
 
         //借用了jjdxm_ijkplayer的URL
-//        String source1 = "http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4";
+        String source1 = "http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4";
 //        String source1 = "http://1253492636.vod2.myqcloud.com/2e5fc148vodgzp1253492636/677f7ef57447398154657427328/cuM4k64ZGGQA.mp4";
 //        String source1 = Environment.getExternalStorageDirectory() + "/record_20180207171537-1.mp4";
 //        String source1 = Environment.getExternalStorageDirectory() + "/test.mp4";
 //        String source1 = "rtmp://live.hkstv.hk.lxdns.com/live/hks";
-        String source1 = "rtmp://10368.liveplay.myqcloud.com/live/10368_e6756ab2dd";
+//        String source1 = "rtmp://10368.liveplay.myqcloud.com/live/10368_e6756ab2dd";
+//        String source1 = "http://10368.liveplay.myqcloud.com/live/10368_6574349c21.flv";
         String name = "普通";
         SwitchVideoModel switchVideoModel = new SwitchVideoModel(name, source1);
 
@@ -173,16 +192,132 @@ public class GSYVideoPlayerActivity extends BaseActivity implements DispatchTouc
          */
         videoPlayer.setReleaseWhenLossAudio(false);
 
-        /** orientationUtils **/
+        /** 横竖屏监听 **/
         orientationUtils.setmOrientationChangeListener(new OrientationUtils.OrientationChangeListener() {
             @Override
             public void onOrientationChange(boolean isVertical) {
-                Toast.makeText(self, "" +isVertical , Toast.LENGTH_SHORT).show();
+                Toast.makeText(self, "" + isVertical, Toast.LENGTH_SHORT).show();
             }
         });
         //过渡动画
         initTransition();
+        videoPlayer.setVideoAllCallBack(new VideoAllCallBack() {
+            @Override
+            public void onStartPrepared(String url, Object... objects) {
+
+            }
+
+            @Override
+            public void onPrepared(String url, Object... objects) {
+
+            }
+
+            @Override
+            public void onClickStartIcon(String url, Object... objects) {
+
+            }
+
+            @Override
+            public void onClickStartError(String url, Object... objects) {
+
+            }
+
+            @Override
+            public void onClickStop(String url, Object... objects) {
+
+            }
+
+            @Override
+            public void onClickStopFullscreen(String url, Object... objects) {
+
+            }
+
+            @Override
+            public void onClickResume(String url, Object... objects) {
+
+            }
+
+            @Override
+            public void onClickResumeFullscreen(String url, Object... objects) {
+
+            }
+
+            @Override
+            public void onClickSeekbar(String url, Object... objects) {
+
+            }
+
+            @Override
+            public void onClickSeekbarFullscreen(String url, Object... objects) {
+
+            }
+
+            @Override
+            public void onAutoComplete(String url, Object... objects) {
+
+            }
+
+            @Override
+            public void onEnterFullscreen(String url, Object... objects) {
+
+            }
+
+            @Override
+            public void onQuitFullscreen(String url, Object... objects) {
+
+            }
+
+            @Override
+            public void onQuitSmallWidget(String url, Object... objects) {
+
+            }
+
+            @Override
+            public void onEnterSmallWidget(String url, Object... objects) {
+
+            }
+
+            @Override
+            public void onTouchScreenSeekVolume(String url, Object... objects) {
+
+            }
+
+            @Override
+            public void onTouchScreenSeekPosition(String url, Object... objects) {
+
+            }
+
+            @Override
+            public void onTouchScreenSeekLight(String url, Object... objects) {
+
+            }
+
+            @Override
+            public void onPlayError(String url, Object... objects) {
+                //如果直播结束，重试时间很长，会抛异常，但是没有错误码
+//                网络问题立刻抛异常
+                Logger.d(objects);
+                finish();
+            }
+
+            @Override
+            public void onClickStartThumb(String url, Object... objects) {
+
+            }
+
+            @Override
+            public void onClickBlank(String url, Object... objects) {
+
+            }
+
+            @Override
+            public void onClickBlankFullscreen(String url, Object... objects) {
+
+            }
+        });
+
     }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -228,7 +363,7 @@ public class GSYVideoPlayerActivity extends BaseActivity implements DispatchTouc
                     finish();
                     overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
                 }
-            } , 500);
+            }, 500);
         }
     }
 
